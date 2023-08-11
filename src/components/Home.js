@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
+import {useNavigate} from 'react-router-dom';
 
 const Home = () => {
     const [data, setData] = useState();
@@ -20,11 +21,18 @@ const Home = () => {
             setloading(false);
         }, 800);
     }
+    
+    let navigate = useNavigate();
 
     useEffect(() => {
-        getPortfolio();
-        // eslint-disable-next-line
-    }, [])
+      if(localStorage.getItem('username')){
+          getPortfolio();
+      }
+      else{
+          navigate("/login");
+      }
+      // eslint-disable-next-line
+      }, [])
   return (
     <>
     {loading?<Loading/>:

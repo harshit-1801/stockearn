@@ -141,19 +141,15 @@ def buy():
     qty = data.get("quantity")
 
     if not symbol:
-        flash("Must provide a symbol","danger")
-        return redirect("/buy")
+        return jsonify(success = False,error = "Must provide a symbol")
     elif not qty:
-        flash("Must provide number of shares","danger")
-        return redirect("/buy")
+        return jsonify(success = False,error = "Must provide number of shares")
     elif int(qty) < 1:
-        flash("Must provide a valid number of shares","danger")
-        return redirect("/buy")
+        return jsonify(success = False,error = "Must provide a valid number of shares")
 
     quote = nse.get_quote(symbol)
     qty = int(qty)
     if not quote:
-        flash("Must provide a valid symbol","danger")
         return jsonify(success = False, error = "Incorrect symbol")
 
     price = quote.get("lastPrice")
@@ -167,12 +163,10 @@ def buy():
         transaction = Transactions(user_id=session["user_id"],symbol=quote.get("symbol"),quantity=qty,quote=price,total=total,date=date)
         db.session.add(transaction)
         db.session.commit()
-        flash("Successfully bought!","success")
         return jsonify(success = True)
 
     else:
-        flash("Not enough cash","danger")
-        return jsonify(error = "Insufficient balance")
+        return jsonify(sucess = False, error = "Insufficient balance")
 
 @api.route("/sell",methods = ["POST"])
 @login_required
@@ -203,7 +197,6 @@ def sell():
     db.session.add(transaction)
     db.session.commit()
 
-    flash("Successfully sold!","success")
     return jsonify(success = True)
 
 
@@ -240,11 +233,10 @@ def login():
     user = Users.query.filter_by(username=data.get("username")).first()
 
     if user == None or not check_password_hash(user.hash,data.get("password")):
-        flash("Incorrect username/password","danger")
-        return jsonify(error = "Invalid username/password")
+        return jsonify(success = False, error = "Incorrect username/password")
+
 
     session["user_id"] = Users.query.filter_by(username=data.get("username")).first().id
-    flash("Successfully logged in","success")
     return jsonify(success = True, username = data.get("username"))
 
 

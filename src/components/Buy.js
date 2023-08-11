@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {useNavigate} from 'react-router-dom';
 
-const Buy = () => {
+const Buy = (props) => {
     let navigate = useNavigate();
 
     const [req, setreq] = useState({symbol: "", quantity: ""})
@@ -22,7 +22,11 @@ const Buy = () => {
 
         const json = await response.json();
         if(json.success){
+            props.showAlert("Bought","success")
             navigate("/")
+        }
+        else{
+            props.showAlert(json.error,"danger")
         }
     }
 

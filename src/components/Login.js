@@ -26,7 +26,7 @@ const Login = (props) => {
             props.showAlert("Logged in!","success");
         }
         else{
-            props.showAlert("Invalid credentials","danger");
+            props.showAlert(json.error,"danger");
         }
     }
     return (
